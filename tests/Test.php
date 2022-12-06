@@ -2,10 +2,9 @@
 
 delcare(strict_types=1);
 
-namespace DDD;
+namespace DDD\Tests;
 
-use PHPUnit;
-
+use PHPUnit\Framework\TestCase;
 
 
 class Test extends TestCase {

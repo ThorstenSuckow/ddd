@@ -4,7 +4,7 @@
 namespace DDD;
 
 /**
- * ENTITY representing a geographical Location.
+ * AGGREGATEROOT representing a geographical Location.
  * 
  */
 class Location {

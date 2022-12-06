@@ -10,7 +10,7 @@ use DateTime;
 /**
  * A representation for a DeliverySpecification.
  * A DeliverySpecification is a VALUEOBJECT that provides information about
- * the arrival time and the location for a cargo.
+ * the required arrival time and the destination of a cargo.
  * A cargo should satisfy its DeliverySpecification. If it won't, it is 
  * probably lost or late.
  * 
@@ -18,29 +18,29 @@ use DateTime;
  */
 class DeliverySpecification {
 
-    private Location $location;
+    private Location $destination;
 
     private DateTime $arrivalTime;
 
-    public function __construct (DateTime $arrivalTime, Location $location) {
+    public function __construct (DateTime $arrivalTime, Location $destination) {
         $this->arrivalTime = $arrivalTime;
-        $this->location = $location;
+        $this->destination = $destination;
     }
 
     public function setArrivalTime(DateTime $arrivalTime): DeliverySpecification {
-        return new DeliverySpecification($arrivalTime, $this->getLocation());
+        return new DeliverySpecification($arrivalTime, $this->getDestination());
     }
 
-    public function setLocation(Location $location) {
-        return new DeliverySpecification ($this->getArrivalTime(), $location);
+    public function setDestination(Location $destination) {
+        return new DeliverySpecification ($this->getArrivalTime(), $destination);
     }
 
     public function getArrivalTime() {
         return $this->arrivalTime;
     }
 
-    public function getLocation() {
-        return $this->location;
+    public function getDestination() {
+        return $this->destination;
     }
 
 }

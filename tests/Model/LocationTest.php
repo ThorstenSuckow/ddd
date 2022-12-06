@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DDD\Tests;
+namespace DDD\Tests\Model;
 
+use DDD\Tests\Tests;
 
 class DeliverySpecificationTest extends Test {
 
 
     public function testConstructor () 
     {
-        $spec = new DeliverySpecification($arrivalTime, $location);
-
+        
 
     }
 
