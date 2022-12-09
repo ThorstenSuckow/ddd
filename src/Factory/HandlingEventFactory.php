@@ -26,58 +26,38 @@
 
 declare(strict_types=1);
 
-namespace DDD\Application;
+namespace DDD\Factory;
 
 use DateTime;
-use DDD\Model\CarrierMovement;
+use DDD\Model\HandlingEvent;
 use DDD\Model\HandlingType;
+use DDD\Model\Cargo;
+use DDD\Model\CarrierMovement;
 
 /**
- * Record Cargo-handling.
- * 
- * 
+ * FACTORY for HandlingEvent. 
  */
-class ActivityLoggingApplication {
-
-    private HandlingEventFactory $handlingEventFactory;
+class HandlingEventFactory {
 
 
-    public function __construct(HandlingEventFactory $handlingEventFactory)
-    {
-        $this->handlingEventFactory = $handlingEventFactory;
-    }
-        
     /**
-     * Handles the specified data as a event for the given Cargo.
+     * Creates a new HandlingEvent with the HandlingType LOADING for the Cargo.
      * 
-     * @see "Each time the cargo is handled in the real world, some user will enter
-     * a Handling Event using the Incident Logging Application"
-     * [DDD, Evans, p. 175]
+     * @return HandlingEvent The created event.
      */
-    public function handleEvent(Cargo $cargo, DateTime $completionTime, HandlingType $type): HandlingEvent
-    {
-        return $cargo->getDeliveryHistory()->addHandlingEvent($cargo, $completionTime, $type);
-    }
-
-    
-    /**
-     * Logs a new HandlingEvent with the handlingType LOADING.
-     * 
-     */
-    public function handleLoadingEvent(
-        Cargo $cargo, 
-        DateTime $completionTime, 
-        CarrierMovement $carrierMovement
+    public function createLoadingEvent(
+        Cargo $cargo,
+        DateTime $completionTime,
+        CarrierMovement $carrierMovement,
     ): HandlingEvent {
-        return $cargo->getDeliveryHistory()->addHandlingEvent(
-            $this->handlingEventFactory->createLoadingEvent(
-                $cargo, 
-                $completionTime, 
-                $carrierMovement
-            )
-        );
-    }
 
+        $event = new HandlingEvent($cargo, $completionTime, HandlingType::LOADING);
+        $event->setCarrierMovement($carrierMovement);
+
+        $cargo->addHandlingEvent($event);
+
+        return $event;
+    }
 
 
 

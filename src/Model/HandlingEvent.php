@@ -74,6 +74,11 @@ class HandlingEvent {
      * @param DateTime $completionTime
      * @param HandlingType $type;
      * 
+     * @see "Nonidentifying attributes of an ENTITY can usually be added
+     * later. In this case, all attributes of the Handling Event are going 
+     * to be set in the initial transaction and never altered [...]"
+     * - [DDD, Evans, p. 175] 
+     * 
      */
     public function __construct(
         Cargo $cargo,
@@ -97,4 +102,13 @@ class HandlingEvent {
     {
         return $this->carrierMovement;
     }
+
+
+    public function getTrackingId(): string
+    {
+        return $this->trackingId;
+    }
+
+
+
 }

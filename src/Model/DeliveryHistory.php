@@ -28,6 +28,7 @@ declare(strict_types=1);
 
 namespace DDD;
 
+USE DDD\Exception\UnexpectedCargoException;
 
 /**
  * Delivery History is an ENTITY and a collection of HandlingEvents that
@@ -55,16 +56,32 @@ class DeliveryHistory {
     /**
      * Adds a new HandlingEvent to this collection. Will assume
      * that the event is the latest that occured and push it on top
-     * of the event-stack. Returns the HandlingEvent created.
+     * of the event-stack.
      *
      * @param HandlingEvent $event
+     * 
+     * @throws UnexpectedCargoException if this Cargo is not equal to the
+     * Cargo registered with the HandlingEvent
+     * 
+     * @see "Transaction coulkd fail because of contention for a_Cargo
+     * or its component a_Delivery_History."
+     * - [DDD, Evans, p.176]
      */
-    public function addHandlingEvent(DateTime $completionTime, HandlingType $type)
+    public function addHandlingEvent(HandlingEvent $event): static
     {
-        $event = new HandlingEvent($this->trackingId, $completionTime, $type);
+        if ($event->getTrackingId() !== $this->getTrackingId()) {
+            throw new UnexpectedCargoException(
+                sprintf(
+                    "The tracking-id of the cargo %1s does not match the tracking-id of the event %2s", 
+                    $this->getTrackingId(),
+                    $event->getTrackingId()
+                );
+            );
+        }
+
         $this->handlingEvents[] = $event;
 
-        return $event;
+        return $this;
     }
 
 
@@ -89,6 +106,10 @@ class DeliveryHistory {
         return $this->handlingEvents[$num - 1];
     }
 
+    public function getTrackingId(): string
+    {
+        return $this->trackingId;
+    }
 
 
 }
