@@ -111,21 +111,6 @@ class Cargo {
     }
 
 
-    /**
-     * Adds a new HandlingEvent to this Cargo's DeliveryHistory.
-     * If this Cargo does not have a DeliveryHistory yet, it will get implicitly
-     * created.
-     * 
-     * @param HandlingEvent $event
-     */
-    public function handleEvent(HandlingEvent $event): static
-    {
-        $this->deliveryHistory->addHandlingEvent($event);
-    
-        return $this;
-    } 
-
-
     public function getTrackingId()
     {
         return $this->trackingId;
