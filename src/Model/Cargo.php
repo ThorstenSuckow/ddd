@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DDD\Model;
 
+use DDD\Exception\CustomerRoleAlreadyExistsException;
 use DDD\Exception\UnknownCustomerRoleValueException;
 
 /**
@@ -25,9 +26,37 @@ class Cargo {
 
     private ?DeliverySpecification $deliverySpecification = null;
 
-    private ?DeliveryHistory $deliveryHistory = null;
+    private DeliveryHistory $deliveryHistory;
 
-    private int $trackingId;
+    private string $trackingId;
+
+
+    public function __construct(string $trackingId)
+    {
+        $this->trackingId = $trackingId;
+        $this->deliveryHistory = new DeliveryHistory($this);
+    }
+
+
+    /**
+     * Adds a new Customer with the CustomerRole to this Cargo.
+     * 
+     * @throws CustomerRoleAlreadyExistsException if a Customer with the given 
+     * CustomerRole already exists
+     */
+    public function addCustomer (Customer $customer, CustomerRole $role): static
+    {
+        $roleValue = $role->value;
+        if (array_key_exists($roleValue, $this->customers)) {
+            throw new CustomerRoleAlreadyExistsException(
+                sprintf("\"%s\" already exists as a role with this Cargo", $roleValue)        
+            );    
+        }
+
+        $this->customers[$roleValue] = $customer;
+
+        return $this;
+    }
 
 
     /**
@@ -134,21 +163,27 @@ class Cargo {
     }
 
 
-    public function getDeliverySpecification (): ?DeliverySpecification 
+    public function getDeliverySpecification (): DeliverySpecification 
     {
         return $this->deliverySpecification;
     }
 
 
-    public function getDeliveryHistory(): ?DeliveryHistory
+    public function getDeliveryHistory(): DeliveryHistory
     {
         return $this->deliveryHistory;
+    }
+
+    public function setDeliveryHistory(Deliveryhistory $deliveryHistory): static 
+    {
+        $this->deliveryHistory = $deliveryHistory;
+        return $this;
     }
 
 
     public function updateDeliverySpecification(DeliverySpecification $deliverySpecification)
     {
-        $this->deliverySpecification = $deliverySpecification:
+        $this->deliverySpecification = $deliverySpecification;
     }
 
 
