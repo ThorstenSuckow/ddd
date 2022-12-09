@@ -31,6 +31,15 @@ class Cargo {
     private string $trackingId;
 
 
+    /**
+     * Constructor.
+     * Creates a new Cargo-instance based on the specified $trackingId and
+     * initializes it with an empty DeliveryHistory. 
+     * 
+     * @see "The DeliveryHistory constructor is used exclusively by its AGGREGATE root, 
+     * namely Cargo, so that the composition of Cargo is encapsulated." 
+     * - [DDD, Evans, p.175]
+     */
     public function __construct(string $trackingId)
     {
         $this->trackingId = $trackingId;
