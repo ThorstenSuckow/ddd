@@ -22,7 +22,6 @@ class CargoFactory {
      * The passed Cargo will serve as the prototype for the new Cargo created.
      * The new Cargo will have
      *   - a new $trackingId, 
-     *   - same DeliverSpecification as the prototype
      *   - all Customers with their same roles as the $prototype
      *
      * @throws UnknowCustomerRoleValueException if any role of the existing Customers
@@ -46,10 +45,6 @@ class CargoFactory {
             $cargo->addCustomer($customer, $role);        
         }
 
-        $deliverySpecification = $prototype->getDeliverySpecification();
-
-        $cargo->updateDeliverySpecification($deliverySpecification);
-    
         return $cargo;
     }
 
