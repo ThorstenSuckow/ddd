@@ -13,5 +13,15 @@ class Customer {
     private string $customerId;
 
 
+    /**
+     * Returns the $customerId.
+     * 
+     * @return string
+     */
+    public function getCustomerId(): string
+    {
+        return $this->customerId;
+    }
+
 
 } 

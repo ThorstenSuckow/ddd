@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DDD\Model;
 
+use DDD\Exception\UnknownCustomerRoleValueException;
 
 /**
  * AGGREGATEROOT representing a Cargo.
@@ -81,6 +82,36 @@ class Cargo {
     public function getCustomer(CustomerRole $role)
     {
         return $this->customers[$role->value] ?? null;
+    }
+
+
+    /**
+     * Returns the Customer's role of this Cargo. 
+     * Returns null if the Customer is not affiliated with this
+     * Cargo.
+     * 
+     * @return CustomerRole|null
+     * 
+     * @throws UnknownCustomerRoleValueException 
+     */
+    public function getRoleOf(Customer $customer): ?CustomerRole
+    {
+        foreach ($this->customers as $role => $availCustomer) {
+            if ($customer->getCustomerId() === $availCustomer->getCustomerId()) {
+
+                $resolved = CustomerRole::tryFrom($role);
+
+                if (!$resolved) {
+                    throw new UnknownCustomerRoleValueException(
+                        sprtintf("\"%s\" was not recognized as a valid role.", $role),
+                    );
+                }
+
+                return $resolved;
+            }
+        }
+
+        return null;
     }
 
 

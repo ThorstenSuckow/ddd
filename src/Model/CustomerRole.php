@@ -13,4 +13,10 @@ enum CustomerRole: string
 
     case PAYER = "payer";
 
+    /**
+     * "Client"-role means the Customer is the client who has ordered 
+     * the Cargo. 
+     */
+    case CLIENT = "client";
+
 } 
