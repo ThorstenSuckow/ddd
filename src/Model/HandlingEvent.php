@@ -70,19 +70,17 @@ class HandlingEvent {
     /**
      * Constructor.
      * 
-     * @param string $trackingId Passing the tracking id of a Cargo here
-     * so that no (possible expensive) reconstitution of a Cargo instance is 
-     * necessary
+     * @param Cargo $cargo
      * @param DateTime $completionTime
      * @param HandlingType $type;
      * 
      */
     public function __construct(
-        string $trackingId,
+        Cargo $cargo,
         DateTime $completionTime, 
         HandlingType $type
     ) {
-        $this->trackingId = $trackingId;
+        $this->trackingId = $cargo->getTrackingId();
         $this->completionTime = $completionTime;
         $this->type = $type;    
     }
