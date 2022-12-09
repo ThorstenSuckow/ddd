@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DDD\Model;
 
+use DDD\Exception\CustomerRoleAlreadyExistsException;
+use DDD\Exception\UnknownCustomerRoleValueException;
 
 /**
  * AGGREGATEROOT representing a Cargo.
@@ -24,9 +26,46 @@ class Cargo {
 
     private ?DeliverySpecification $deliverySpecification = null;
 
-    private ?DeliveryHistory $deliveryHistory = null;
+    private DeliveryHistory $deliveryHistory;
 
-    private int $trackingId;
+    private string $trackingId;
+
+
+    /**
+     * Constructor.
+     * Creates a new Cargo-instance based on the specified $trackingId and
+     * initializes it with an empty DeliveryHistory. 
+     * 
+     * @see "The DeliveryHistory constructor is used exclusively by its AGGREGATE root, 
+     * namely Cargo, so that the composition of Cargo is encapsulated." 
+     * - [DDD, Evans, p.175]
+     */
+    public function __construct(string $trackingId)
+    {
+        $this->trackingId = $trackingId;
+        $this->deliveryHistory = new DeliveryHistory($this);
+    }
+
+
+    /**
+     * Adds a new Customer with the CustomerRole to this Cargo.
+     * 
+     * @throws CustomerRoleAlreadyExistsException if a Customer with the given 
+     * CustomerRole already exists
+     */
+    public function addCustomer (Customer $customer, CustomerRole $role): static
+    {
+        $roleValue = $role->value;
+        if (array_key_exists($roleValue, $this->customers)) {
+            throw new CustomerRoleAlreadyExistsException(
+                sprintf("\"%s\" already exists as a role with this Cargo", $roleValue)        
+            );    
+        }
+
+        $this->customers[$roleValue] = $customer;
+
+        return $this;
+    }
 
 
     /**
@@ -85,6 +124,57 @@ class Cargo {
 
 
     /**
+     * Returns the Customers as numeric array or an array keyed with their role,
+     * depending on $roleKey
+     * 
+     * @param bool $roleKey true to return an array keyed with the Customer's role
+     * 
+     * @return array
+     */
+    public function getCustomers(bool $roleKey = false): array
+    {
+        if ($roleKey === false) {
+            return array_values($this->customers);
+        }
+        $res = [];
+        foreach ($this->customers() as $role => $customer) {
+            $res[$role] = $customer;
+        }
+        return $res;
+    }
+
+
+    /**
+     * Returns the Customer's role of this Cargo. 
+     * Returns null if the Customer is not affiliated with this
+     * Cargo.
+     * 
+     * @return CustomerRole|null
+     * 
+     * @throws UnknownCustomerRoleValueException 
+     */
+    public function getRoleOf(Customer $customer): ?CustomerRole
+    {
+        foreach ($this->customers as $role => $availCustomer) {
+            if ($customer->getCustomerId() === $availCustomer->getCustomerId()) {
+
+                $resolved = CustomerRole::tryFrom($role);
+
+                if (!$resolved) {
+                    throw new UnknownCustomerRoleValueException(
+                        sprtintf("\"%s\" was not recognized as a valid role.", $role),
+                    );
+                }
+
+                return $resolved;
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
      * Returns the current location of this Cargo. If the Cargo has no DeliveryHistory
      * yet, the Location returned will be null.
      *
@@ -103,21 +193,27 @@ class Cargo {
     }
 
 
-    public function getDeliverySpecification (): ?DeliverySpecification 
+    public function getDeliverySpecification (): DeliverySpecification 
     {
         return $this->deliverySpecification;
     }
 
 
-    public function getDeliveryHistory(): ?DeliveryHistory
+    public function getDeliveryHistory(): DeliveryHistory
     {
         return $this->deliveryHistory;
+    }
+
+    public function setDeliveryHistory(Deliveryhistory $deliveryHistory): static 
+    {
+        $this->deliveryHistory = $deliveryHistory;
+        return $this;
     }
 
 
     public function updateDeliverySpecification(DeliverySpecification $deliverySpecification)
     {
-        $this->deliverySpecification = $deliverySpecification:
+        $this->deliverySpecification = $deliverySpecification;
     }
 
 
