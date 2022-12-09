@@ -115,6 +115,27 @@ class Cargo {
 
 
     /**
+     * Returns the Customers as numeric array or an array keyed with their role,
+     * depending on $roleKey
+     * 
+     * @param bool $roleKey true to return an array keyed with the Customer's role
+     * 
+     * @return array
+     */
+    public function getCustomers(bool $roleKey = false): array
+    {
+        if ($roleKey === false) {
+            return array_values($this->customers);
+        }
+        $res = [];
+        foreach ($this->customers() as $role => $customer) {
+            $res[$role] = $customer;
+        }
+        return $res;
+    }
+
+
+    /**
      * Returns the Customer's role of this Cargo. 
      * Returns null if the Customer is not affiliated with this
      * Cargo.
