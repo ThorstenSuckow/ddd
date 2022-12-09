@@ -26,13 +26,23 @@ class BookingApplication {
         CargoRepository $cargoRepository
     ) {
         $this->cargoFactory = $cargoFactory;
-        $this->cargoRepsository = $cargoRepository;        
+        $this->cargoRepository = $cargoRepository;        
     }
 
     
     public function registerNewCargo(Customer $customer, DeliverySpecification $deliverySpecification): Cargo
     {
 
+    }
+
+
+    /**
+     * Returns a list of Cargos associated with the Customer.
+     * 
+     */
+    public function listCargosForCustomer (Customer $customer): array
+    {
+        return $this->cargoRepository->findByCustomerId($customer->getId());
     }
 
 
