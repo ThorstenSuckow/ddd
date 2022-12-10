@@ -29,6 +29,9 @@ declare(strict_types=1);
 
 namespace DDD\Exception;
 
+use RuntimeException;
+
+
 /**
  * Exception to be thrown whenever a value that is assumed to be 
  * representing a CustomerRole could not be resolved to a CustomerRole.
