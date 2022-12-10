@@ -41,6 +41,13 @@ use DDD\Exception\UnknownCustomerRoleValueException;
  * A Cargo can be tracked by quering it's HandlingEvents.
  * Cargos can be uniquely identified with their $trackingId.
  * 
+ * @note removed persistent DeliveryHistory
+ * @see "The need to update DeliveryHistory when adding a Handling Event
+ * gets the Cargo AGGREGATE involved in the transaction. If some other user
+ * was modifying Cargo at the same time, the handling Event could fail or
+ * be delayed."
+ * - [DDD, Evans, p.177] 
+ * 
  */
 class Cargo {
 
@@ -51,30 +58,17 @@ class Cargo {
 
     private ?DeliverySpecification $deliverySpecification = null;
 
-    /**
-     * @todo can we avoid circular references?
-     * "Tracking is core to Cargo in this application. A history must
-     * refer to its subject."
-     * - [DDD, Evans, p. 170]
-     */
-    private DeliveryHistory $deliveryHistory;
-
+    
     private string $trackingId;
 
 
     /**
      * Constructor.
-     * Creates a new Cargo-instance based on the specified $trackingId and
-     * initializes it with an empty DeliveryHistory. 
-     * 
-     * @see "The DeliveryHistory constructor is used exclusively by its AGGREGATE root, 
-     * namely Cargo, so that the composition of Cargo is encapsulated." 
-     * - [DDD, Evans, p.175]
+     * Creates a new Cargo-instance based on the specified $trackingId. 
      */
     public function __construct(string $trackingId)
     {
         $this->trackingId = $trackingId;
-        $this->deliveryHistory = new DeliveryHistory($this);
     }
 
 
@@ -180,40 +174,9 @@ class Cargo {
     }
 
 
-    /**
-     * Returns the current location of this Cargo. If the Cargo has no DeliveryHistory
-     * yet, the Location returned will be null.
-     *
-     * 
-     * @return Location|null
-     */
-    public function getCurrentLocation(): ?Location
-    {
-        if ($this->getDeliveryHistory()) {
-            return null;
-        }
-
-        $event = $this->getDeliveryHistory()->getNewestEvent();
-
-        return $event->getCarrierMovement()->getDestination();
-    }
-
-
     public function getDeliverySpecification (): DeliverySpecification 
     {
         return $this->deliverySpecification;
-    }
-
-
-    public function getDeliveryHistory(): DeliveryHistory
-    {
-        return $this->deliveryHistory;
-    }
-
-    public function setDeliveryHistory(Deliveryhistory $deliveryHistory): static 
-    {
-        $this->deliveryHistory = $deliveryHistory;
-        return $this;
     }
 
 

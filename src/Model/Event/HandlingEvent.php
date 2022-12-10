@@ -74,20 +74,18 @@ class HandlingEvent {
      * @return CarrierEvent The created event.
      */
     public static function newLoading(
-        Cargo $cargo,
+        string $trackingId,
         DateTime $completionTime,
         CarrierMovement $carrierMovement,
     ): CarrierEvent {
 
         $event = new CarrierEvent(
-            $cargo, 
+            $trackingId, 
             $completionTime, 
             HandlingType::LOADING,
             $carrierMovement
         );
         
-        $cargo->addHandlingEvent($event);
-
         return $event;
     }
 
