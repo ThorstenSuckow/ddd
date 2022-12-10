@@ -32,10 +32,10 @@ namespace DDD\Exception;
 use RuntimeException;
 
 /**
- * Exception to be thrown whenever a CustomerRole required for a Cargo
- * is not available.
+ * Exception to be thrown whenever a specific Cargo was expected, but another one
+ * was given..
  */
-class MissingCustomerRoleForCargoException extends RuntimeException 
+class UnexpectedCargoException extends RuntimeException 
 {
 
 

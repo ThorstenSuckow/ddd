@@ -32,10 +32,10 @@ namespace DDD\Exception;
 use RuntimeException;
 
 /**
- * Exception to be thrown whenever a CustomerRole required for a Cargo
- * is not available.
+ * Exception to be thrown whenever a given HandlingType cannot be used 
+ * for computing..
  */
-class MissingCustomerRoleForCargoException extends RuntimeException 
+class UnsupportedHandlingTypeException extends RuntimeException 
 {
 
 
