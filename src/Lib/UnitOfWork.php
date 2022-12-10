@@ -24,48 +24,18 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 declare(strict_types=1);
 
-namespace DDD\Application;
-
-use DDD\Model\Location;
-use DDD\Repository\HandlingEventRepository;
+namespace DDD\Lib;
 
 /**
- * Access past and present handling of a particular Cargo
+ * UnitOfWork representative.
  */
-class TrackingQuery {
+class UnitOfWork 
+{
 
-    private HandlingEventRepository $handlingEventRepository; 
-
-
-    public function __construct(HandlingEventRepository $handlingEventRepository)
-    {
-        $this->handlingEventRepository = $handlingEventRepository;
-    }
-
-
-    /**
-     * 
-     * @return array<int,HandlingEvent> Sorted in ASCENDING order
-     */
-    public function getHistoryForTrackingId(string $trackingId)
-    {
-        return $this->handlingEventRepository->findByTrackindId($trackingId);
-    }
-
-
-    public function getCurrentLocation(string $trackingId): ?Location
-    {
-        $events = array_reverse($this->getHistoryForTrackingId($trackingId));
-
-        foreach ($events as $event) {
-            if ($event->getHandlingType()->involvesCarrier()) {
-                return $event->getCarrierMovement()->getDestination();
-            }
-        }
-
-        return null;
-    }
 
 }
+
+

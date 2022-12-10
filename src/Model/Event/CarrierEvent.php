@@ -44,22 +44,15 @@ class CarrierEvent extends HandlingEvent {
 
     private CarrierMovement $carrierMovement;
 
-    /**
-     * Constructor.
-     * 
-     * @param Cargo $cargo
-     * @param DateTime $completionTime
-     * @param CarrierMovement $carrierMovement;
-     * 
-     */
+    
     public function __construct(
-        Cargo $cargo,
+        string $trackingId,
         DateTime $completionTime, 
         HandlingType $type,
         CarrierMovement $carrierMovement
 
     ) {
-        parent::__construct($cargo, $completionTime, $type);
+        parent::__construct($trackingId, $completionTime, $type);
         $this->carrierMovement = $carrierMovement;
     }
 
