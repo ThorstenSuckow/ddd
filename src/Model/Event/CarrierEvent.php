@@ -24,20 +24,49 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 declare(strict_types=1);
 
-namespace DDD\Exception;
+namespace DDD\Model\Event;
 
-use RuntimeException;
+use DateTime;
+use DDD\Model\CarrierMovement;
+
 
 /**
- * Exception to be thrown whenever a specific Cargo was expected, but another one
- * was given..
+ * A specialized HandlingEvent that's associated with a Carrier(Movement).
+ * 
+ * HandlingEvent provides access to CarrierMovement, since the Cargo needs 
+ * to be tracked when Carriers are involved..
+ * 
+ * 
  */
-class UnexpectedCargoException extends RuntimeException 
-{
+class CarrierEvent extends HandlingEvent {
+
+    private CarrierMovement $carrierMovement;
+
+    /**
+     * Constructor.
+     * 
+     * @param Cargo $cargo
+     * @param DateTime $completionTime
+     * @param CarrierMovement $carrierMovement;
+     * 
+     */
+    public function __construct(
+        Cargo $cargo,
+        DateTime $completionTime, 
+        HandlingType $type,
+        CarrierMovement $carrierMovement
+
+    ) {
+        parent::__construct($cargo, $completionTime, $type);
+        $this->carrierMovement = $carrierMovement;
+    }
 
 
+    public function getCarrierMovement(): CarrierMovement
+    {
+        return $this->carrierMovement;
+    }
 
 }

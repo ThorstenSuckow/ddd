@@ -29,6 +29,8 @@ declare(strict_types=1);
 
 namespace DDD\Exception;
 
+use RuntimeException;
+
 /**
  * Exception to be thrown whenever a CustomerRole associated with a target entity
  * must not already exists.

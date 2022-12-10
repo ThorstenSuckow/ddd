@@ -20,4 +20,12 @@ enum HandlingType: string
 
     case CLAIMED = "claimed";
 
+
+    public function involvesCarrier()
+    {
+        return match($this) {
+            HandlingType::LOADING => true
+        };
+    }
+
 }

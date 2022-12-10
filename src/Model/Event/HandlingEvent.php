@@ -47,10 +47,10 @@ use DateTime;
  * one reason to make it the root of its own AGGREGATE."
  * - [DDD, Evans, p. 171]
  * 
- * 
- * HandlingEvent provides access to CarrierMovement, since the Cargo needs 
- * to be tracked.
- * 
+ * "The Handling Event in the model is an abstraction that might encapsulate a variety
+ * of specialized Handling Event classes, ranging from loading and unloading to sealing,
+ * storing, and other activities not related to Carriers."
+ * - [DDD, Evans, p. 176]
  * 
  */
 class HandlingEvent {
@@ -59,12 +59,38 @@ class HandlingEvent {
 
     private HandlingType $type;
 
-    /**
-     * A HandlingEvent might have 1 or 0 CarrierMovements.
-     */
-    private ?CarrierMovement $carrierMovement = null;
-
     private string $trackingId;
+
+    /**
+     * "By adding FACTORY METHODS to the base class (Handling Event)
+     * for each type, instance creation is abstracted, freeing the client 
+     * from knowledge of the implementation."
+     * - [DDD, Evans, p. 176] 
+     */
+
+    /**
+     * Creates a new CarrierEvent with the HandlingType LOADING.
+     * 
+     * @return CarrierEvent The created event.
+     */
+    public static function newLoading(
+        Cargo $cargo,
+        DateTime $completionTime,
+        CarrierMovement $carrierMovement,
+    ): CarrierEvent {
+
+        $event = new CarrierEvent(
+            $cargo, 
+            $completionTime, 
+            HandlingType::LOADING,
+            $carrierMovement
+        );
+        
+        $cargo->addHandlingEvent($event);
+
+        return $event;
+    }
+
 
 
     /**
@@ -90,25 +116,8 @@ class HandlingEvent {
         $this->type = $type;    
     }
 
-
-    public function setCarrierMovement(CarrierMovement $carrierMovement): static 
-    {
-        $this->carrierMovement = $carrierMovement;
-        return $this;
-    }
-
-
-    public function getCarrierMovement(): ?CarrierMovement
-    {
-        return $this->carrierMovement;
-    }
-
-
     public function getTrackingId(): string
     {
         return $this->trackingId;
     }
-
-
-
 }

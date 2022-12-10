@@ -30,7 +30,10 @@ namespace DDD\Application;
 
 use DateTime;
 use DDD\Model\CarrierMovement;
-use DDD\Model\HandlingType;
+use DDD\Model\Event\HandlingType;
+use DDD\Model\Event\HandlingEvent;
+use DDD\Model\Event\CarrierEvent;
+use DDD\Exception\UnsupportedHandlingTypeException;
 
 /**
  * Record Cargo-handling.
@@ -39,13 +42,6 @@ use DDD\Model\HandlingType;
  */
 class ActivityLoggingApplication {
 
-    private HandlingEventFactory $handlingEventFactory;
-
-
-    public function __construct(HandlingEventFactory $handlingEventFactory)
-    {
-        $this->handlingEventFactory = $handlingEventFactory;
-    }
         
     /**
      * Handles the specified data as a event for the given Cargo.
@@ -53,28 +49,35 @@ class ActivityLoggingApplication {
      * @see "Each time the cargo is handled in the real world, some user will enter
      * a Handling Event using the Incident Logging Application"
      * [DDD, Evans, p. 175]
+     * 
+     * @throws UnsupportedHandlingTypeException if the HandlingType involves a 
+     * Carrier
      */
     public function handleEvent(Cargo $cargo, DateTime $completionTime, HandlingType $type): HandlingEvent
     {
-        return $cargo->getDeliveryHistory()->addHandlingEvent($cargo, $completionTime, $type);
+        if (HandlingType::involvesCarrier($type)) {
+            throw new UnsupportedHandlingTypeException(
+                sprintf("\"%s\" needs a Carrier specified.", $type->value)
+            );
+        }
+
+        return $cargo->getDeliveryHistory()->addHandlingEvent(
+            new HandlingEvent($cargo, $completionTime, $type)
+        );
     }
 
     
     /**
-     * Logs a new HandlingEvent with the handlingType LOADING.
+     * Logs a new CarrierEvent with the handlingType LOADING.
      * 
      */
     public function handleLoadingEvent(
         Cargo $cargo, 
         DateTime $completionTime, 
         CarrierMovement $carrierMovement
-    ): HandlingEvent {
+    ): CarrierEvent {
         return $cargo->getDeliveryHistory()->addHandlingEvent(
-            $this->handlingEventFactory->createLoadingEvent(
-                $cargo, 
-                $completionTime, 
-                $carrierMovement
-            )
+            HandlingEvent::newLoading($cargo, $completionTime, $carrierMovement)
         );
     }
 

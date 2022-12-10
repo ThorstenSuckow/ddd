@@ -24,40 +24,19 @@
  * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 declare(strict_types=1);
 
-namespace DDD\Factory;
+namespace DDD\Exception;
 
-use DateTime;
-use DDD\Model\HandlingEvent;
-use DDD\Model\HandlingType;
-use DDD\Model\Cargo;
-use DDD\Model\CarrierMovement;
+use RuntimeException;
 
 /**
- * FACTORY for HandlingEvent. 
+ * Exception to be thrown whenever a given HandlingType cannot be used 
+ * for computing..
  */
-class HandlingEventFactory {
-
-
-    /**
-     * Creates a new HandlingEvent with the HandlingType LOADING for the Cargo.
-     * 
-     * @return HandlingEvent The created event.
-     */
-    public function createLoadingEvent(
-        Cargo $cargo,
-        DateTime $completionTime,
-        CarrierMovement $carrierMovement,
-    ): HandlingEvent {
-
-        $event = new HandlingEvent($cargo, $completionTime, HandlingType::LOADING);
-        $event->setCarrierMovement($carrierMovement);
-
-        $cargo->addHandlingEvent($event);
-
-        return $event;
-    }
+class UnsupportedHandlingTypeException extends RuntimeException 
+{
 
 
 
