@@ -26,46 +26,63 @@
 
 declare(strict_types=1);
 
-namespace DDD\Application;
 
-use DDD\Model\Location;
-use DDD\Repository\HandlingEventRepository;
+namespace DDD\Repository;
+
+use DDD\Model\Event\HandlingEvent;
+use DDD\Model\Event\HandlingType;
+use DateTime;
+use DDD\Lib\UnitofWork;
 
 /**
- * Access past and present handling of a particular Cargo
+ * Repository for HandlingEvent.
+ * 
+ * @see "To take responsibility for the queries, we'll add a REPOSITORY
+ * for Handling Events. The Handling Event Repository will support 
+ * a query for the Events related to a certain Cargo. In addition,
+ * the REPOSITORY can provide queries optimized, to answer specific
+ * questions efficiently."
+ * - [DDD, Evans, p. 177]
+ * 
  */
-class TrackingQuery {
+class HandlingEventRepository 
+{
 
-    private HandlingEventRepository $handlingEventRepository; 
-
-
-    public function __construct(HandlingEventRepository $handlingEventRepository)
+    public function findByTrackingIdTimeType(
+        string $trackingId, 
+        DateTime $time, 
+        HandlingType $type
+    ): array
     {
-        $this->handlingEventRepository = $handlingEventRepository;
+        return [];
     }
 
+    public function addHandlingEvent(HandlingEvent $event): UnitOfWork
+    {
+        return new UnitofWork; // null on error
+    }
 
     /**
-     * 
-     * @return array<int,HandlingEvent> Sorted in ASCENDING order
+     * Sorted by completion_time in ASCENDING order.
      */
-    public function getHistoryForTrackingId(string $trackingId)
+    public function findByTrackingId(string $trackingId): array
     {
-        return $this->handlingEventRepository->findByTrackindId($trackingId);
+        return [];
     }
 
 
-    public function getCurrentLocation(string $trackingId): ?Location
+    public function findByScheduleId(string $schdeduleId): array
     {
-        $events = array_reverse($this->getHistoryForTrackingId($trackingId));
-
-        foreach ($events as $event) {
-            if ($event->getHandlingType()->involvesCarrier()) {
-                return $event->getCarrierMovement()->getDestination();
-            }
-        }
-
-        return null;
+        return [];
     }
+
+
+    public function findMostRecentTrackingIdType(
+        string $trackingId, 
+        HandlingType $type
+    ): array {
+        return [];
+    }
+
 
 }

@@ -33,6 +33,7 @@ use DDD\Model\CarrierMovement;
 use DDD\Model\Event\HandlingType;
 use DDD\Model\Event\HandlingEvent;
 use DDD\Model\Event\CarrierEvent;
+use DDD\Repository\HandlingEventRepository;
 use DDD\Exception\UnsupportedHandlingTypeException;
 
 /**
@@ -41,6 +42,11 @@ use DDD\Exception\UnsupportedHandlingTypeException;
  * 
  */
 class ActivityLoggingApplication {
+
+    public function __construct(HandlingEventRepository $handlingEventRepository)
+    {
+        $this->handlingEventRepository = $handlingEventRepository;
+    }
 
         
     /**
@@ -61,9 +67,14 @@ class ActivityLoggingApplication {
             );
         }
 
-        return $cargo->getDeliveryHistory()->addHandlingEvent(
-            new HandlingEvent($cargo, $completionTime, $type)
-        );
+
+        $event = new HandlingEvent($cargo->getTrackingId(), $completionTime, $type)
+
+        $uow = $this->handlingRepository->addHandlingEvent($event);
+
+        $uow->commit();
+
+        return $event;
     }
 
     
@@ -76,10 +87,14 @@ class ActivityLoggingApplication {
         DateTime $completionTime, 
         CarrierMovement $carrierMovement
     ): CarrierEvent {
-        return $cargo->getDeliveryHistory()->addHandlingEvent(
-            HandlingEvent::newLoading($cargo, $completionTime, $carrierMovement)
-        );
+
+        $event = HandlingEvent::newLoading($cargo->getTrackingId(), $completionTime, $carrierMovement);
+
+        $uow = $this->handlingEventRepository->addHandlingEvent($event);
+
+        $uow->commit();
     }
+
 
 
 
