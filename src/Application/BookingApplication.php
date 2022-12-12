@@ -50,12 +50,33 @@ class BookingApplication {
     public function __construct(
         CargoFactory $cargoFactory, 
         CargoRepository $cargoRepository,
-        TrackingQuery $trackingQuery
+        TrackingQuery $trackingQuery,
+        SalesManagementService $salesManagementService
     ) {
         $this->cargoFactory = $cargoFactory;
         $this->cargoRepository = $cargoRepository;        
         $this->trackingQuery = $trackingQuery;
+        $this->salesManagementService = $salesManagementService;
     }
+
+
+    /**
+     * 
+     */
+    public function getAvailableSpaceWithShipment(Shipment $shipment, CargoType $cargoType)
+    {
+           
+
+    }
+
+
+    public function getEstimatedBookingCountBasedOnCargoType(CargoType $cargoType)
+    {
+        return $this->salesManagementService->estimateBookingCount($cargoType);
+
+    }
+
+
 
     
     public function registerNewCargo(Customer $customer, DeliverySpecification $deliverySpecification): Cargo

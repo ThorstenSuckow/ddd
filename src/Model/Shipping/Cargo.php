@@ -58,6 +58,7 @@ class Cargo {
 
     private ?DeliverySpecification $deliverySpecification = null;
 
+    private CargoType $cargoType;
     
     private string $trackingId;
 
@@ -66,10 +67,21 @@ class Cargo {
      * Constructor.
      * Creates a new Cargo-instance based on the specified $trackingId. 
      */
-    public function __construct(string $trackingId)
+    public function __construct(string $trackingId, CargoType $cargoType = CargoType::M)
     {
         $this->trackingId = $trackingId;
+        $this->cargoType = $cargoType;
     }
+
+
+    /**
+     * Returns the type of the Cargo based on its size.
+     */
+    public function getCargoType()
+    {
+        return $this->cargoType;
+    }
+
 
 
     /**
