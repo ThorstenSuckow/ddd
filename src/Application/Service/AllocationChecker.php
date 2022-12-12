@@ -6,7 +6,7 @@ namespace DDD\Service;
 
 
 /**
- * Service (acting as an ANTI CORRUPTION LAYER) for translating
+ * Service / Integration Gateway (acting as an ANTI CORRUPTION LAYER) for translating
  * requests from the Shipping System to the Sales Management System, which
  * is another application not within the Boundaries of **this** application.
  * 
@@ -18,7 +18,7 @@ namespace DDD\Service;
  * [DDD, Evans, p. 182]
  * 
  */
-class SalesManagementSerrvice 
+class AllocationChecker 
 {
 
     public function estimateBookingCount(CargoType $type)

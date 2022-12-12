@@ -51,12 +51,12 @@ class BookingApplication {
         CargoFactory $cargoFactory, 
         CargoRepository $cargoRepository,
         TrackingQuery $trackingQuery,
-        SalesManagementService $salesManagementService
+        AllocationChecker $allocationChecker
     ) {
         $this->cargoFactory = $cargoFactory;
         $this->cargoRepository = $cargoRepository;        
         $this->trackingQuery = $trackingQuery;
-        $this->salesManagementService = $salesManagementService;
+        $this->allocationChecker = $allocationChecker;
     }
 
 
@@ -65,14 +65,14 @@ class BookingApplication {
      */
     public function getAvailableSpaceWithShipment(Shipment $shipment, CargoType $cargoType)
     {
-           
+        return $this->cargoRepository->getAvailableSpaceForCargoType($cargoType);
 
     }
 
 
     public function getEstimatedBookingCountBasedOnCargoType(CargoType $cargoType)
     {
-        return $this->salesManagementService->estimateBookingCount($cargoType);
+        return $this->allocationChecker->estimateBookingCount($cargoType);
 
     }
 
