@@ -32,16 +32,18 @@ declare(strict_types=1);
 namespace DDD\Model\Cargo;
 
 
-enum CargoType: string 
+/**
+ * @see "An ENTERPRISE SEGMENT is a set of dimensions that 
+ * define a way of breaking down a business. [...] A class
+ * called Enterprise Segment will appear in our domain model
+ * and design as an additional VALUE OBJECT, which will have 
+ * to be derived for each Cargo."
+ * [DDD, Evans, p. 183-184] 
+ * 
+ * 
+ */
+class EnterpriseSegment
 {
-    case S = "small";
-
-    case M = "M";
-    
-    case L = "L";
-    
-    case XL = "XL";
-    
 
 
 }

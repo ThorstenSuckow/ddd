@@ -33,7 +33,7 @@ use DDD\Repository\Cargo;
 use DDD\Repository\HandlingEventRepository;
 use DDD\Model\Customer;
 use DDD\Model\DeliverySpecification;
-
+use DDD\Service\AllocationChecker;
 
 /**
  * Register new Cargo and prepare the system for it.
@@ -60,12 +60,47 @@ class BookingApplication {
     }
 
 
+     /**
+     * @see "We have given the Booking Application the job of applying this rule:
+     * A Cargo is accepted if the space allocated for its Enterprise Segment is 
+     * greater than the quantity already booked plus the size of the new Cargo."
+     * [DDD, Evans, p. 184]
+     * 
+     */
+    public function mayAccept (Cargo $cargo, int $quantityBooked): bool
+    {
+
+        $segment = $this->deriveEnterpriseSegment($cargo);
+   
+        $space = $this->allocationChecker->allocation($segment);
+    
+        if ($space >= $quantityBooked + $cargo->getSize()) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Returns the Enterprise Segment for the Cargo.
+     * 
+     * @see "It isn't clear how the Booking Application derives the
+     * Enterprise Segment."
+     * [DDD, Evans, p. 184]
+     */
+    public function deriveEnterpriseSegment(Cargo $cargo): EnterpriseSegment
+    {
+
+    }
+
+
     /**
      * 
      */
-    public function getAvailableSpaceWithShipment(Shipment $shipment, CargoType $cargoType)
+    public function getQuantityBooked(EnterpriseSegment $segment)
     {
-        return $this->cargoRepository->getAvailableSpaceForCargoType($cargoType);
+        return $this->cargoRepository->getQuantityBooked($segment);
 
     }
 

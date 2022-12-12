@@ -14,6 +14,16 @@ use DDD\Lib\UnitOfWork;
 class CargoRepository 
 {
 
+    /**
+     * @see "The Cargo Repository must also provide a query based on the 
+     * Enrerprise Segment."
+     * [DDD, Evans, p. 184]
+     */
+    public function getQuantityBooked(EnterpriseSegment $segment): int
+    {
+
+    }
+
     public function findByCargoTrakingId(string $trackingId): ?Cargo
     {
 
