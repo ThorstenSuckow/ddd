@@ -7,4 +7,4 @@ This is a work in progress.
 
 
 ### Notes
- - Chris Evan uses the name **"Activity Logging Application"** [DDD, Evans, p.172] when referring to the **"Incident Logging Application"**. I'm  using the same name for the class representing this application in `src/Application/ActivityLoggingApplication.php`
+ - Eric Evan uses the name **"Activity Logging Application"** [DDD, Evans, p.172] when referring to the **"Incident Logging Application"**. I'm  using the same name for the class representing this application in `src/Application/ActivityLoggingApplication.php`
